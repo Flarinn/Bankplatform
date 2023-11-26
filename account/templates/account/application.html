@@ -1,0 +1,37 @@
+
+{% extends 'account/base.html' %}
+
+{% block title %}Application{% endblock %}
+
+{% block content %}
+					<h1>Список заявок</h1>
+			      	{% for p in user.profile.applications.all %}
+			                <div class="h-100">
+								<div class="card p-4">
+									<h4 class="card-title font-weight-bold text-center">Статус: {{ p.Status }}</h4>
+			                		<div class="card-body">
+
+			                  			<h5 class="card-title">Сумма: {{ p.Sum }} &nbsp Месяцы: {{ p.Months }} &nbsp Принципал: {{ p.BeneficiarCompany }} &nbsp  Бенефициар:{{ p.PrincipalCompany }} </h5>
+										{% if p.Status == 'На заполнении у агента' %}
+											<button class="btn btn-success"  type="submit" onclick="location.href='{% url 'applicationinfo' p.id %}'">Заполнить данные</button>
+										{% elif user.profile.role == 'PLATFORM' and p.Status == 'На проверке у сотрудника платформы' %}
+											<button class="btn btn-success"  type="submit" onclick="location.href='{% url 'applicationinfo' p.id %}'">Проверить информацию по заявке</button>
+										{% elif user.profile.role == 'PLATFORM' and p.Status == 'Отказано' or user.profile.role == 'AGENT' and p.Status == 'Отказано' %}
+											<button class="btn btn-danger"  type="submit" onclick="location.href='{% url 'applicationinfo' p.id %}'">Отказано</button>
+										{% elif user.profile.role == 'BANK' and p.Status == 'На рассмотрении у банка' %}
+											<button class="btn btn-success"  type="submit" onclick="location.href='{% url 'applicationinfo' p.id %}'">Вынести решение по заявке</button>
+										{% elif user.profile.role == 'AGENT' and p.Status == 'Выдано' or user.profile.role == 'BANK' and p.Status == 'Выдано' %}
+										<button class="btn btn-primary"  type="submit" onclick="location.href='{% url 'applicationinfo' p.id %}'">На выдаче</button>
+										{% else %}
+											<button class="btn btn-success"  type="submit" onclick="location.href='{% url 'applicationinfo' p.id %}'">Просмотреть информацию о заявке</button>
+										{% endif %}
+
+									</div>
+								</div>
+			              	</div>
+			    	{% endfor %}
+{% endblock %}
+
+<li class = "last"><a href="{% url 'profile' user.username %}">{{ user.username }}</a></li>
+onclick="location.href='{% url 'applicationinfo' p.id %}'"
+href="{% url 'applicationinfo' p.id %}"
